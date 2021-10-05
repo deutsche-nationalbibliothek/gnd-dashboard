@@ -15,11 +15,7 @@ def top10(df: pd.DataFrame, bbg: Optional[str]) -> pd.DataFrame:
         df_top10 = df_top10[df_top10["bbg"].str.startswith(bbg)]
 
     df_top10["count"] = 1
-    df_top10 = (
-        df_top10.groupby(by=["gnd_id", "bbg", "name"])
-        .sum()
-        .sort_values("count", ascending=False)
-    )
+    df_top10 = df_top10.groupby(by=["gnd_id", "bbg", "name"]).sum().sort_values("count", ascending=False)
 
     return df_top10
 
@@ -39,21 +35,13 @@ def main():
     # GND-Stammdaten (ID (gnd_id), Erfassungsdatum (ser) und URL (uri))
     gnd_data = pd.read_csv("data/user/gnd.csv", low_memory=False)
 
-    gnd_data["created_at"] = pd.to_datetime(
-        gnd_data["ser"].str[-8:], format="%d-%m-%y", errors="coerce"
-    )
+    gnd_data["created_at"] = pd.to_datetime(gnd_data["ser"].str[-8:], format="%d-%m-%y", errors="coerce")
 
-    ser_stat = (
-        gnd_data["created_at"]
-        .groupby(gnd_data.created_at.dt.to_period("M"))
-        .agg("count")
-    )
+    ser_stat = gnd_data["created_at"].groupby(gnd_data.created_at.dt.to_period("M")).agg("count")
     ser_stat.to_csv("stats/gnd_created_at.csv")
 
     # Verknüpfungen von DNB-Titeldaten aus den Feldern `0XXX $9`.
-    title_links = pd.read_csv(
-        "data/user/0XXX_9.csv", low_memory=False, names=["idn", "gnd_id", "name"]
-    )
+    title_links = pd.read_csv("data/user/0XXX_9.csv", low_memory=False, names=["idn", "gnd_id", "name"])
 
     # Tu_names
     Tu_names = pd.read_csv("data/user/Tu_names.csv", low_memory=False)
@@ -121,9 +109,7 @@ def main():
     end = datetime.now()
     start = end - relativedelta(years=1)
 
-    gnd_365 = gnd_data[
-        (gnd_data["created_at"] >= start) & (gnd_data["created_at"] <= end)
-    ]
+    gnd_365 = gnd_data[(gnd_data["created_at"] >= start) & (gnd_data["created_at"] <= end)]
 
     df_365 = df[df["gnd_id"].isin(gnd_365["gnd_id"])]
 
@@ -135,16 +121,12 @@ def main():
         Tx_top10[:10].to_csv(f"stats/title_gnd_newcomer_top10_{bbg}.csv")
 
     # Maschinell verknüpft
-    df = pd.read_csv(
-        "data/user/044H_9.csv", low_memory=False, names=["idn", "gnd_id", "name"]
-    )
+    df = pd.read_csv("data/user/044H_9.csv", low_memory=False, names=["idn", "gnd_id", "name"])
     with open("stats/title_gnd_links_auto.csv", "w") as f:
         f.write(str(len(df)))
 
     # Aus Fremddaten
-    df = pd.read_csv(
-        "data/user/044K_9.csv", low_memory=False, names=["idn", "gnd_id", "name"]
-    )
+    df = pd.read_csv("data/user/044K_9.csv", low_memory=False, names=["idn", "gnd_id", "name"])
     with open("stats/title_gnd_links_ext.csv", "w") as f:
         f.write(str(len(df)))
 
