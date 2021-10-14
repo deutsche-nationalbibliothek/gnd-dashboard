@@ -462,7 +462,7 @@ st.title("GND-Dashboard")
 # infoebereich oben
 with st.container():
     st.info(
-        "Hier finden Sie statistische Auswertungen der GND und ihrer Verknüpfungen mit den Titeldaten der Deutschen Nationalbibliothek (Stand der Daten: September 2021). Wählen Sie links die Satzart, die Sie interessiert, und Sie erhalten die verfügbaren Auswertungen und Statstiken. Verwenden Sie einen auf Chromium basierenden Browser."
+        "Hier finden Sie statistische Auswertungen der GND und ihrer Verknüpfungen mit den Titeldaten der Deutschen Nationalbibliothek (Stand der Daten: Oktober 2021). Wählen Sie links die Satzart, die Sie interessiert, und Sie erhalten die verfügbaren Auswertungen und Statstiken. Verwenden Sie einen auf Chromium basierenden Browser."
     )
     with st.expander("Methodik und Datenherkunft"):
         st.markdown(
