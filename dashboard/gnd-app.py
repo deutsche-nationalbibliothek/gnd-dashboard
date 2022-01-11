@@ -28,12 +28,12 @@ def sachbegriff_cloud():
     st.write(
         "Wählen Sie ein Datum aus den letzten 10 Werktagen vor der letzten Aktualisierung der Daten des Dashboards und sehen Sie eine Wordcloud der 100 meistverwendeten GND-Sachbegriffe dieses Tages. Die Größe des Begriffes entspricht der Häufigkeit des Sachbegriffs."
     )
-    files = glob.glob(f"{path}/../data/*Ts-count.csv")
+    files = glob.glob(f"{path}/../stats/*Ts-count.csv")
     daten = [x[-23:-13] for x in files]
     daten.sort()
     daten_filter = st.select_slider("Wählen Sie ein Datum", options=daten, value=daten[-1])
 
-    df = pd.read_csv(f"{path}/../data/{daten_filter}-Ts-count.csv")
+    df = pd.read_csv(f"{path}/../stats/{daten_filter}-Ts-count.csv")
 
     dict = df.to_dict(orient="records")
     worte = {}
