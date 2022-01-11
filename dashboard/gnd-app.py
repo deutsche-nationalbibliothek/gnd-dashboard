@@ -17,7 +17,7 @@ streamlit_analytics.start_tracking()
 @st.cache
 def load_gnd_top_daten(typ):
     gnd_top_df = pd.DataFrame()
-    for file in glob.glob(f"{path}/../data/title_gnd_{typ}_*.csv"):
+    for file in glob.glob(f"{path}/../stats/title_gnd_{typ}_*.csv"):
         gnd_top_df = gnd_top_df.append(pd.read_csv(file, index_col=None))
     return gnd_top_df
 
@@ -158,14 +158,14 @@ def wirkungsorte_musik():
 
 def gesamt_entity_count():
     # Gesamtzahl der GND-Entitäten
-    with open(f"{path}/../data/gnd_entity_count.csv", "r") as f:
+    with open(f"{path}/../stats/gnd_entity_count.csv", "r") as f:
         entities = f"{int(f.read()):,}"
     return st.write(f"GND-Entitäten gesamt: {entities.replace(',','.')}")
 
 
 def relationen():
     # Top 10 der GND-Relationierungscodes
-    rels = pd.read_csv(f"{path}/../data/gnd_codes_all.csv", index_col=False)
+    rels = pd.read_csv(f"{path}/../stats/gnd_codes_all.csv", index_col=False)
     st.subheader("Relationen")
     st.write(
         "GND-Datensätze können mit anderen Datensätzen verlinkt (»relationiert«) werden. Die Art der Verlinkung wird über einen Relationierungscode beschrieben. Hier sind die am häufigsten verwendeten Relationierungscodes zu sehen. Die Auflösung der wichtigsten Codes gibt es [hier](https://wiki.dnb.de/download/attachments/51283696/Codeliste_ABCnachCode_Webseite_2012-07.pdf)."
@@ -183,14 +183,14 @@ def relationen():
     )
     st.altair_chart(relation_count, use_container_width=True)
 
-    with open(f"{path}/../data/gnd_relation_count.csv", "r") as f:
+    with open(f"{path}/../stats/gnd_relation_count.csv", "r") as f:
         relations = f"{int(f.read()):,}"
     st.write(f"Relationen zwischen Entitäten gesamt: {relations.replace(',','.')}")
 
 
 def systematik():
     # Ranking der meistverwendeten GND-Systematik-Notationen
-    classification = pd.read_csv(f"{path}/../data/gnd_classification_all.csv", index_col=False)
+    classification = pd.read_csv(f"{path}/../stats/gnd_classification_all.csv", index_col=False)
     st.subheader("Systematik")
     st.write(
         "Die Entitäten der GND können in eine Systematik eingeordnet werden. Die Liste der möglichen Notationen gibt es [hier](http://www.dnb.de/gndsyst)."
@@ -215,7 +215,7 @@ def systematik():
 
 def systematik_ts():
     # Ranking der Systematik von Ts-Sätzen
-    classification_ts = pd.read_csv(f"{path}/../data/gnd_classification_Ts_all.csv", index_col=False)
+    classification_ts = pd.read_csv(f"{path}/../stats/gnd_classification_Ts_all.csv", index_col=False)
     st.subheader("Systematik der Sachbegriffe")
     st.write(
         "Die Entitäten der GND können in eine Systematik eingeordnet werden. Hier sind die Systematik-Notationen der Sachbegriffe (Ts) aufgetragen. Die Liste der möglichen Notationen gibt es [hier](http://www.dnb.de/gndsyst)."
@@ -241,7 +241,7 @@ def systematik_ts():
 def zeitverlauf():
     # zeitverlauf der erstellung der GND-Sätze ab Januar 1972
     created_at = pd.read_csv(
-        f"{path}/../data/gnd_created_at.csv",
+        f"{path}/../stats/gnd_created_at.csv",
         index_col="created_at",
         parse_dates=True,
         header=0,
@@ -265,7 +265,7 @@ def zeitverlauf():
 
 def entities():
     # GND-Entitäten nach Satzart und Katalogisierungslevel
-    df = pd.read_csv(f"{path}/../data/gnd_entity_types.csv", index_col=False, names=["entity", "count"])
+    df = pd.read_csv(f"{path}/../stats/gnd_entity_types.csv", index_col=False, names=["entity", "count"])
     df["level"] = df.entity.str[2:3]
     df.entity = df.entity.str[:2]
 
@@ -311,13 +311,13 @@ def newcomer():
     if satzart == "alle":
         st.subheader(f"TOP 10 GND-Newcomer")
         st.write("TOP 10 der GND-Entitäten, die in den letzten 365 Tagen angelegt wurden.")
-        newcomer_daten = pd.read_csv(f"{path}/../data/title_gnd_newcomer_top10.csv", index_col=None)
+        newcomer_daten = pd.read_csv(f"{path}/../stats/title_gnd_newcomer_top10.csv", index_col=None)
 
         newcomer = (
             alt.Chart(newcomer_daten)
             .mark_bar()
             .encode(
-                alt.X("gnd_id", title="Entitäten", sort="-y"),
+                alt.X("gnd_id:O", title="Entitäten", sort="-y"),
                 alt.Y("count", title="Anzahl"),
                 alt.Color("name", sort="-y", title="Entität"),
                 tooltip=[
@@ -355,7 +355,7 @@ def gnd_top():
     # TOP 10 GND-Entitäten in DNB-Titeldaten, nach Satzart gefiltert
     if satzart == "alle":
         st.subheader(f"TOP 10 GND-Entitäten in DNB-Titeldaten")
-        top_daten = pd.read_csv(f"{path}/../data/title_gnd_top10.csv", index_col=None)
+        top_daten = pd.read_csv(f"{path}/../stats/title_gnd_top10.csv", index_col=None)
 
         gnd_top = (
             alt.Chart(top_daten)
@@ -401,24 +401,24 @@ def dnb_links():
     # GND-Verknüpfungen in DNB Titeldaten
     if satzart == "alle":
         # Anzahl GND-Verknüpfungen in DNB-Titeldaten
-        with open(f"{path}/../data/title_gnd_links.csv", "r") as f:
+        with open(f"{path}/../stats/title_gnd_links.csv", "r") as f:
             links = f"{int(f.read()):,}"
 
         # GND-Entitäten maschinell verknüpft
-        with open(f"{path}/../data/title_gnd_links_auto.csv", "r") as f:
+        with open(f"{path}/../stats/title_gnd_links_auto.csv", "r") as f:
             auto_entites = int(f.read())
 
         # GND-Entitäten aus Fremddaten
-        with open(f"{path}/../data/title_gnd_links_ext.csv", "r") as f:
+        with open(f"{path}/../stats/title_gnd_links_ext.csv", "r") as f:
             fremd_entities = int(f.read())
 
         # Anzahl der intellktuell verknüpften GND-Entitäten in DNB-Titeldaten
-        with open(f"{path}/../data/title_gnd_links_unique.csv", "r") as f:
+        with open(f"{path}/../stats/title_gnd_links_unique.csv", "r") as f:
             uniques = int(f.read())
             uniques_str = f"{uniques:,}"
 
         # Durchschnittliche Anzahl an GND-Verknüpfungen pro DNB-Titeldatensatz
-        with open(f"{path}/../data/title_gnd_mean.csv", "r") as f:
+        with open(f"{path}/../stats/title_gnd_mean.csv", "r") as f:
             mean = str(round(float(f.read()), 2)).replace(".", ",")
 
         st.write(
@@ -451,7 +451,7 @@ def dnb_links():
         st.altair_chart(entities, use_container_width=True)
 
     else:
-        with open(f"{path}/../data/title_gnd_mean_{satzart[:2]}.csv", "r") as f:
+        with open(f"{path}/../stats/title_gnd_mean_{satzart[:2]}.csv", "r") as f:
             mean = str(round(float(f.read()), 2)).replace(".", ",")
         st.write(f"Durchschnittlich {mean} Verknüpfungen zu {satzart}-Sätzen pro DNB-Titeldatensatz")
 
@@ -462,7 +462,7 @@ st.title("GND-Dashboard")
 # infoebereich oben
 with st.container():
     st.info(
-        "Hier finden Sie statistische Auswertungen der GND und ihrer Verknüpfungen mit den Titeldaten der Deutschen Nationalbibliothek (Stand der Daten: Oktober 2021). Wählen Sie links die Satzart, die Sie interessiert, und Sie erhalten die verfügbaren Auswertungen und Statstiken. Verwenden Sie einen auf Chromium basierenden Browser."
+        "Hier finden Sie statistische Auswertungen der GND und ihrer Verknüpfungen mit den Titeldaten der Deutschen Nationalbibliothek (Stand der Daten: Dezember 2021). Wählen Sie links die Satzart, die Sie interessiert, und Sie erhalten die verfügbaren Auswertungen und Statstiken. Verwenden Sie einen auf Chromium basierenden Browser."
     )
     with st.expander("Methodik und Datenherkunft"):
         st.markdown(
