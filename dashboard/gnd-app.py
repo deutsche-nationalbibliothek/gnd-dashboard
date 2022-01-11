@@ -47,7 +47,7 @@ def sachbegriff_cloud():
 
 def wirkungsorte():
     # ranking und karte der meistverwendeten wirkungsorte aller personen in der gnd
-    df = pd.read_csv(f"{path}/../data/wirkungsorte-top50.csv")
+    df = pd.read_csv(f"{path}/../stats/wirkungsorte-top50.csv")
     df.drop(columns=["id"], inplace=True)
     df.rename(columns={"name": "Name", "count": "Anzahl"}, inplace=True)
 
@@ -101,7 +101,7 @@ def wirkungsorte():
 
 def wirkungsorte_musik():
     # nach jahrzehnten zwischen 1400 und 2010 gefilterte auswertung der GND-Musikwerke, Musik-Personen und Wikrungsorte und daraus abgeleitete Zentren der Musikkultur, dargestellt auf einer Karte
-    musiker_orte = pd.read_csv(f"{path}/../data/musiker_orte.csv", sep="\t", index_col="idn")
+    musiker_orte = pd.read_csv(f"{path}/../stats/musiker_orte.csv", sep="\t", index_col="idn")
     st.header("Wirkungszentren der Musik 1400–2010")
     st.write(
         "Eine Auswertung der veröffentlichten Titel von Musikern und deren Wirkungszeiten erlaubt Rückschlüsse auf die musikalischen Zentren, wie sie im Bestand der DNB repräsentiert sind."
