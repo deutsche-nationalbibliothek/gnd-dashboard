@@ -14,7 +14,9 @@ Um die statistischen Auswertungen zu erstellen, wird ein aktueller Abzug der
 Katalogdaten (in PICA+) benötigt. Diese Datei ist im Projektverzeichnis unter
 `DNBGNDtitel.dat.gz` abzulegen.
 
-Die Auswertungen werde wie folgt erzeugt:
+Die Auswertungen werden wie folgt erzeugt:
+
+Die Option -j4 am Befehl `make` gibt die Anzahl der zu verwendenden Prozessorkerne an. Wenn Ihr Rechner mehr als 4 Kerne hat, ändern Sie die Zahl entsprechend.
 
 ```bash
 $ make -j4 all
